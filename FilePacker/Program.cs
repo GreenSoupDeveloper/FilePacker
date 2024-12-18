@@ -163,148 +163,114 @@ class Program
         Console.WriteLine("Press any key to exit..");
         string end = Console.ReadLine();
     }
-    public static void Pack(string[] paths)
+   public static void Pack(string[] paths)
+{
+
+    if (folderMode)
     {
-        Random random = new Random();
-        StringBuilder dataBuilder = new StringBuilder();
-        StringBuilder passCodeBuilder = new StringBuilder();
-        List<string> thingery = new List<string>();
 
-        if (folderMode)
+        for (int k = 0; k < orgFolders.Length; k++)
         {
-            for (int k = 0; k < orgFolders.Length; k++)
-            {
-                for (int i = 0; i < paths.Length; i++)
-                {
-                    if (!File.Exists(paths[i]))
-                    {
-                        Console.WriteLine("File not found.");
-                        continue;
-                    }
 
-                    // Prepare the passcode
-                    thingery.Clear();
-                    thingery.AddRange(charTable);
-
-                    passCodeBuilder.Clear();
-                    for (int h = 0; h < charTable.Length; h++)
-                    {
-                        int index = random.Next(0, thingery.Count);
-                        char selectedChar = thingery[index][0]; // Assuming charTable contains single-character strings
-                        thingery.RemoveAt(index);
-                        passCodeBuilder.Append(selectedChar);
-                        passCodeBuilder.Append(h == charTable.Length - 1 ? "Z" : charTable[random.Next(charTable.Length)]);
-                    }
-                    string passCode = passCodeBuilder.ToString();
-
-                    Console.WriteLine("Packing: " + paths[i]);
-
-                    // Read and process file
-                    byte[] bytes = File.ReadAllBytes(paths[i]);
-                    string filename = Path.GetFileName(paths[i]);
-                    string fileContent = BitConverter.ToString(bytes)
-                        .Replace("-", "")
-                        .Replace("0", charTable[0])
-                        .Replace("1", charTable[1])
-                        .Replace("2", charTable[2])
-                        .Replace("3", charTable[3])
-                        .Replace("4", charTable[4])
-                        .Replace("5", charTable[5])
-                        .Replace("6", charTable[6])
-                        .Replace("7", charTable[7])
-                        .Replace("8", charTable[8])
-                        .Replace("9", charTable[9])
-                        .Replace("A", charTable[10])
-                        .Replace("B", charTable[11])
-                        .Replace("C", charTable[12])
-                        .Replace("D", charTable[13])
-                        .Replace("E", charTable[14])
-                        .Replace("F", charTable[15]);
-
-                    string processedContent = fileContent.Insert(random.Next(0, fileContent.Length), "Z" + passCode);
-                    dataBuilder.AppendLine("[HEADER]");
-                    dataBuilder.AppendLine(fileFolders[k].path[i] + filename);
-                    dataBuilder.AppendLine(processedContent);
-                }
-
-                if (dataBuilder.Length > 0)
-                {
-                    string outputPath = Path.Combine(
-                        Path.GetDirectoryName(orgFolders[k]),
-                        Path.GetFileName(Path.GetDirectoryName(orgFolders[k])) + "_PACKED.pkf"
-                    );
-                    File.WriteAllText(outputPath, dataBuilder.ToString());
-                    Console.WriteLine(outputPath);
-                    dataBuilder.Clear(); // Clear after writing to free memory
-                }
-            }
-        }
-        else
-        {
             for (int i = 0; i < paths.Length; i++)
             {
+                string passCode = "";
+                thingery = new List<string>();
+                tempCharTable = new string[charTable.Length];
+
+                for (int h = 0; h < charTable.Length; h++)
+                {
+                    thingery.Add(charTable[h]);
+                }
+                Random rad = new Random();
+                string parapa = "";
+                for (int h = 0; h < charTable.Length; h++)
+                {
+                    int ahhhh = rad.Next(0, thingery.Count - 1);
+                    tempCharTable[h] = thingery[ahhhh];
+                    if (h == charTable.Length - 1)
+                        passCode += thingery[ahhhh] + "Z";
+                    else
+                        passCode += thingery[ahhhh] + charTable[rad.Next(0, charTable.Length - 1)];
+                    parapa += thingery[ahhhh];
+                    thingery.RemoveAt(ahhhh);
+
+
+                }
+               
+
+
                 if (!File.Exists(paths[i]))
                 {
                     Console.WriteLine("File not found.");
                     continue;
                 }
-
-                // Prepare the passcode
-                thingery.Clear();
-                thingery.AddRange(charTable);
-
-                passCodeBuilder.Clear();
-                for (int h = 0; h < charTable.Length; h++)
-                {
-                    int index = random.Next(0, thingery.Count);
-                    char selectedChar = thingery[index][0];
-                    thingery.RemoveAt(index);
-                    passCodeBuilder.Append(selectedChar);
-                    passCodeBuilder.Append(h == charTable.Length - 1 ? "Z" : charTable[random.Next(charTable.Length)]);
-                }
-                string passCode = passCodeBuilder.ToString();
-
+                Random random = new Random();
                 Console.WriteLine("Packing: " + paths[i]);
-
-                // Read and process file
                 byte[] bytes = File.ReadAllBytes(paths[i]);
                 string filename = Path.GetFileName(paths[i]);
-                string fileContent = BitConverter.ToString(bytes)
-                    .Replace("-", "")
-                    .Replace("0", charTable[0])
-                    .Replace("1", charTable[1])
-                    .Replace("2", charTable[2])
-                    .Replace("3", charTable[3])
-                    .Replace("4", charTable[4])
-                    .Replace("5", charTable[5])
-                    .Replace("6", charTable[6])
-                    .Replace("7", charTable[7])
-                    .Replace("8", charTable[8])
-                    .Replace("9", charTable[9])
-                    .Replace("A", charTable[10])
-                    .Replace("B", charTable[11])
-                    .Replace("C", charTable[12])
-                    .Replace("D", charTable[13])
-                    .Replace("E", charTable[14])
-                    .Replace("F", charTable[15]);
-
-                string processedContent = fileContent.Insert(random.Next(0, fileContent.Length), "Z" + passCode);
-                dataBuilder.AppendLine("[HEADER]");
-                dataBuilder.AppendLine(filename);
-                dataBuilder.AppendLine(processedContent);
+                string thinng = BitConverter.ToString(bytes).Replace("-", "").Replace("0", tempCharTable[0]).Replace("1", tempCharTable[1]).Replace("2", tempCharTable[2]).Replace("3", tempCharTable[3]).Replace("4", tempCharTable[4]).Replace("5", tempCharTable[5]).Replace("6", tempCharTable[6]).Replace("7", tempCharTable[7]).Replace("8", tempCharTable[8]).Replace("9", tempCharTable[9]).Replace("A", tempCharTable[10]).Replace("B", tempCharTable[11]).Replace("C", tempCharTable[12]).Replace("D", tempCharTable[13]).Replace("E", tempCharTable[14]).Replace("F", tempCharTable[15]);
+                dataString += "[HEADER]\n" + fileFolders[k].path[i] + filename + "\n" + thinng.Insert(random.Next(0, thinng.Length), "Z" + passCode) + "\n";
+                File.WriteAllText("test.txt", BitConverter.ToString(bytes));
             }
-
-            if (dataBuilder.Length > 0)
+            if (dataString != "")
             {
-                string outputPath = Path.Combine(
-                    Path.GetDirectoryName(paths[0]),
-                    Path.GetFileName(Path.GetDirectoryName(paths[0])) + "_PACKED.pkf"
-                );
-                File.WriteAllText(outputPath, dataBuilder.ToString());
-                Console.WriteLine(outputPath);
+                File.WriteAllText(Path.GetDirectoryName(orgFolders[k]) + "\\" + Path.GetDirectoryName(orgFolders[k]).Split(new string[] { "\\" }, StringSplitOptions.None)[Path.GetDirectoryName(orgFolders[k]).Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1] + "_PACKED.pkf", dataString);
+                Console.WriteLine(Path.GetDirectoryName(orgFolders[k]) + "\\" + Path.GetDirectoryName(orgFolders[k]).Split(new string[] { "\\" }, StringSplitOptions.None)[Path.GetDirectoryName(orgFolders[k]).Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1] + "_PACKED.pkf");
             }
         }
     }
+    else
+    {
+        for (int i = 0; i < paths.Length; i++)
+        {
+
+            string passCode = "";
+            thingery = new List<string>();
+            tempCharTable = new string[charTable.Length];
+
+            for (int h = 0; h < charTable.Length; h++)
+            {
+                thingery.Add(charTable[h]);
+            }
+            Random rad = new Random();
+            string parapa = "";
+            for (int h = 0; h < charTable.Length; h++)
+            {
+                int ahhhh = rad.Next(0, thingery.Count - 1);
+                tempCharTable[h] = thingery[ahhhh];
+                if (h == charTable.Length - 1)
+                    passCode += thingery[ahhhh] + "Z";
+                else
+                    passCode += thingery[ahhhh] + charTable[rad.Next(0, charTable.Length - 1)];
+                parapa += thingery[ahhhh];
+                thingery.RemoveAt(ahhhh);
+
+
+            }
+           
+
+
+            if (!File.Exists(paths[i]))
+            {
+                Console.WriteLine("File not found.");
+                continue;
+            }
+            Random random = new Random();
+            Console.WriteLine("Packing: " + paths[i]);
+            byte[] bytes = File.ReadAllBytes(paths[i]);
+            string filename = Path.GetFileName(paths[i]);
+            string thinng = BitConverter.ToString(bytes).Replace("-", "").Replace("0", tempCharTable[0]).Replace("1", tempCharTable[1]).Replace("2", tempCharTable[2]).Replace("3", tempCharTable[3]).Replace("4", tempCharTable[4]).Replace("5", tempCharTable[5]).Replace("6", tempCharTable[6]).Replace("7", tempCharTable[7]).Replace("8", tempCharTable[8]).Replace("9", tempCharTable[9]).Replace("A", tempCharTable[10]).Replace("B", tempCharTable[11]).Replace("C", tempCharTable[12]).Replace("D", tempCharTable[13]).Replace("E", tempCharTable[14]).Replace("F", tempCharTable[15]);
+            dataString += "[HEADER]\n" + filename + "\n" + thinng.Insert(random.Next(0, thinng.Length), "Z" + passCode) + "\n";
+
+        }
+        if (dataString != "")
+        {
+            File.WriteAllText(Path.GetDirectoryName(paths[0]) + "\\" + Path.GetDirectoryName(paths[0]).Split(new string[] { "\\" }, StringSplitOptions.None)[Path.GetDirectoryName(paths[0]).Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1] + "_PACKED.pkf", dataString);
+            Console.WriteLine(Path.GetDirectoryName(paths[0]) + "\\" + Path.GetDirectoryName(paths[0]).Split(new string[] { "\\" }, StringSplitOptions.None)[Path.GetDirectoryName(paths[0]).Split(new string[] { "\\" }, StringSplitOptions.None).Length - 1] + "_PACKED.pkf");
+        }
+    }
+}
 
     public static void Unpack(string[] paths)
     {

@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <ApplicationIcon>filepacker.ico</ApplicationIcon>
+    <AssemblyName>FilePacker</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
